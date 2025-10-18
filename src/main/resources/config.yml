@@ -1,0 +1,37 @@
+# XyKit 礼包插件配置
+
+# 数据库设置
+database:
+  # 存储类型: flatfile 或 mysql
+  type: "flatfile"
+  # 如果是mysql，配置以下信息
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "minecraft"
+    username: "root"
+    password: "password"
+    table-prefix: "xykit_"
+
+# 礼包配置
+kits:
+  # 新手礼包示例
+  starter:
+    name: "新手礼包"
+    type: "starter"  # starter 或 cdk
+    cooldown: 0  # 冷却时间(秒)，0表示只能领取一次
+    commands:
+      - "cmd:money give {player} 100"
+      - "msg {player} &a欢迎来到服务器！"
+
+  # CDK礼包示例
+  vip:
+    name: "VIP礼包"
+    type: "cdk"
+    commands:
+      - "money give {player} 100"
+
+# CDK设置
+cdk-settings:
+  code-length: 12
+  code-charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

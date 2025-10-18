@@ -1,0 +1,38 @@
+name: XyKit
+version: 1.0.0
+main: com.xykit.XyKitPlugin
+api-version: "1.21"
+description: 一个功能完善的礼包插件
+author: YourName
+website: your-website.com
+
+commands:
+  kit:
+    description: 礼包主命令
+    usage: /<command> [reload|create|createcdk|claim]
+    permission: xykit.use
+  cdk:
+    description: CDK兑换命令
+    usage: /<command> <code>
+    permission: xykit.cdk.use
+
+permissions:
+  xykit.*:
+    description: 所有xykit权限
+    children:
+      xykit.use: true
+      xykit.admin: true
+      xykit.cdk.use: true
+      xykit.cdk.admin: true
+  xykit.use:
+    description: 使用礼包命令
+    default: true
+  xykit.admin:
+    description: 管理员权限
+    default: op
+  xykit.cdk.use:
+    description: 使用CDK兑换
+    default: true
+  xykit.cdk.admin:
+    description: CDK管理权限
+    default: op
