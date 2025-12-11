@@ -64,6 +64,23 @@ public class DataManager {
         plugin.getLogger().info("数据文件加载完成，当前有 " + getAllCDKs().size() + " 个CDK");
     }
 
+    /**
+     * 重新加载数据文件（用于手动修改后重新加载）
+     */
+    public void reloadData() {
+        if (dataFile == null || !dataFile.exists()) {
+            loadData();
+            return;
+        }
+
+        try {
+            dataConfig = YamlConfiguration.loadConfiguration(dataFile);
+            plugin.getLogger().info("数据文件重新加载完成");
+        } catch (Exception e) {
+            plugin.getLogger().severe("重新加载数据文件时出错: " + e.getMessage());
+        }
+    }
+
     public void saveData() {
         if (dataConfig == null || dataFile == null) {
             plugin.getLogger().warning("尝试保存数据但配置为空，跳过保存");
@@ -107,7 +124,8 @@ public class DataManager {
         }
 
         try {
-            dataConfig.set("cdks." + code + ".kit", kitName);
+            // 存储时统一使用小写，避免大小写不一致问题
+            dataConfig.set("cdks." + code + ".kit", kitName.toLowerCase());
             dataConfig.set("cdks." + code + ".max-uses", uses);
             dataConfig.set("cdks." + code + ".used", 0);
             dataConfig.set("cdks." + code + ".created", System.currentTimeMillis());

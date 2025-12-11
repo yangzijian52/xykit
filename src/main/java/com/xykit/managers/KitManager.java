@@ -41,6 +41,7 @@ public class KitManager {
                 kitData.put("cooldown", config.getInt(path + ".cooldown", 0));
                 kitData.put("commands", config.getStringList(path + ".commands"));
 
+                // 统一使用小写作为键
                 kits.put(kitName.toLowerCase(), kitData);
             }
         }
@@ -68,6 +69,7 @@ public class KitManager {
      * @return 是否发放成功
      */
     public boolean giveKit(Player player, String kitName, String cdkCode) {
+        // 统一使用小写查找礼包
         Map<String, Object> kit = kits.get(kitName.toLowerCase());
         if (kit == null) {
             player.sendMessage("§c礼包不存在!");
@@ -79,7 +81,7 @@ public class KitManager {
 
         // 检查礼包类型和领取条件
         if ("starter".equals(type)) {
-            if (dataManager.hasClaimedStarterKit(playerId, kitName)) {
+            if (dataManager.hasClaimedStarterKit(playerId, kitName.toLowerCase())) {
                 player.sendMessage("§c你已经领取过这个礼包了!");
                 return false;
             }
@@ -95,7 +97,13 @@ public class KitManager {
             }
 
             String cdkKit = dataManager.getCDKKit(cdkCode);
-            if (!kitName.equals(cdkKit)) {
+            if (cdkKit == null) {
+                player.sendMessage("§cCDK对应的礼包信息错误!");
+                return false;
+            }
+
+            // 比较时统一使用小写，避免大小写不一致
+            if (!kitName.equalsIgnoreCase(cdkKit)) {
                 player.sendMessage("§c这个CDK不能用于此礼包!");
                 return false;
             }
@@ -120,7 +128,7 @@ public class KitManager {
 
         // 记录新手礼包领取
         if ("starter".equals(type)) {
-            dataManager.setClaimedStarterKit(playerId, kitName);
+            dataManager.setClaimedStarterKit(playerId, kitName.toLowerCase());
         }
 
         player.sendMessage("§a成功领取礼包: " + kit.get("name"));
@@ -170,7 +178,8 @@ public class KitManager {
      * @return 创建的CDK代码，如果失败返回null
      */
     public String createCDK(String kitName, int amount) {
-        if (!kits.containsKey(kitName.toLowerCase())) {
+        String lowerKitName = kitName.toLowerCase();
+        if (!kits.containsKey(lowerKitName)) {
             return null;
         }
 
@@ -180,7 +189,8 @@ public class KitManager {
             return null;
         }
 
-        boolean success = dataManager.addCDK(code, kitName, amount);
+        // 存储时使用小写礼包名
+        boolean success = dataManager.addCDK(code, lowerKitName, amount);
         if (success) {
             // 添加到内存集合，防止重复
             generatedCDKs.add(code);
@@ -196,14 +206,15 @@ public class KitManager {
      * @return 创建的CDK代码列表
      */
     public List<String> createMultipleCDKs(String kitName, int amount, int count) {
-        if (!kits.containsKey(kitName.toLowerCase())) {
+        String lowerKitName = kitName.toLowerCase();
+        if (!kits.containsKey(lowerKitName)) {
             return Collections.emptyList();
         }
 
         List<String> codes = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             String code = generateUniqueCDKCode();
-            if (code != null && dataManager.addCDK(code, kitName, amount)) {
+            if (code != null && dataManager.addCDK(code, lowerKitName, amount)) {
                 generatedCDKs.add(code);
                 codes.add(code);
             } else {
@@ -260,6 +271,7 @@ public class KitManager {
         if (!dataManager.isValidCDK(cdkCode)) {
             return null;
         }
+        // 返回的是小写礼包名
         return dataManager.getCDKKit(cdkCode);
     }
 
@@ -281,10 +293,19 @@ public class KitManager {
     }
 
     /**
-     * 重载礼包配置
+     * 重载礼包配置和数据
      */
     public void reload() {
+        // 重新加载配置
+        configManager.reloadConfig();
+
+        // 重新加载数据文件（重要！）
+        dataManager.reloadData();
+
+        // 重新加载礼包
         loadKits();
+
+        plugin.getLogger().info("礼包配置和数据已重载");
     }
 
     /**

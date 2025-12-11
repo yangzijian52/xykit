@@ -145,8 +145,8 @@ public class KitCommand implements CommandExecutor {
                     sender.sendMessage("§c你没有权限执行此命令!");
                     return true;
                 }
-                plugin.getConfigManager().reloadConfig();
-                kitManager.loadKits();
+                // 调用KitManager的reload方法，该方法会重新加载配置和数据
+                kitManager.reload();
                 sender.sendMessage("§a配置重载完成!");
                 break;
 
@@ -156,6 +156,7 @@ public class KitCommand implements CommandExecutor {
                     return true;
                 }
                 sender.sendMessage("§e当前内存中的CDK数量: §6" + kitManager.getGeneratedCDKCount());
+                sender.sendMessage("§e当前数据文件中的CDK数量: §6" + plugin.getDataManager().getAllCDKs().size());
                 break;
 
             default:
