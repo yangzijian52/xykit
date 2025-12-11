@@ -26,7 +26,7 @@ XyKit 是一个功能完善的Minecraft礼包插件，支持新手礼包和CDK�
 ## 安装指南
 
 1. 下载插件
-   - 从发布页面下载最新版本的 xykit-1.0.0.jar
+   - 从发布页面下载最新版本的 xykit-x.x.x.jar
 
 2. 安装到服务器
    - 将JAR文件放入服务器的 plugins 文件夹
@@ -63,8 +63,8 @@ XyKit 是一个功能完善的Minecraft礼包插件，支持新手礼包和CDK�
 |------|------|------|----------|
 | `xykit.use` | true | 允许玩家使用基础礼包命令 | `/kit`, `/kit claim` |
 | `xykit.cdk.use` | true | 允许玩家使用CDK兑换命令 | `/cdk` |
-| `xykit.admin` | op | 管理员权限 | `/kit createcdk`, `/kit reload`, `/kit create`, `/kit cdkinfo` |
-| `xykit.cdk.admin` | op | CDK管理权限 | `/kit createcdk`, `/kit cleancdk`, `/kit cleancdk confirm` |
+| `xykit.admin` | op | 管理员权限 | `/kit createcdk` `/kit reload` `/kit create` `/kit cdkinfo` |
+| `xykit.cdk.admin` | op | CDK管理权限 | `/kit createcdk` `/kit cleancdk` `/kit cleancdk confirm` |
 | `xykit.*` | op | 所有xykit权限的父权限 | 包含所有xykit权限 |
 
 ## 配置文件说明
