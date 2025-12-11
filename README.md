@@ -61,7 +61,7 @@ XyKit 是一个功能完善的Minecraft礼包插件，支持新手礼包和CDK�
 
 | 权限 | 默认 | 描述 | 包含命令 |
 |------|------|------|----------|
-| `xykit.use` | true | 允许玩家使用基础礼包命令 | `/kit`, `/kit claim` |
+| `xykit.use` | true | 允许玩家使用基础礼包命令 | `/kit` `/kit claim` |
 | `xykit.cdk.use` | true | 允许玩家使用CDK兑换命令 | `/cdk` |
 | `xykit.admin` | op | 管理员权限 | `/kit createcdk` `/kit reload` `/kit create` `/kit cdkinfo` |
 | `xykit.cdk.admin` | op | CDK管理权限 | `/kit createcdk` `/kit cleancdk` `/kit cleancdk confirm` |
