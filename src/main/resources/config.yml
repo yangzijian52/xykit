@@ -18,7 +18,7 @@ kits:
   # 新手礼包示例
   starter:
     name: "新手礼包"
-    type: "starter"  # starter 或 cdk
+    type: "starter"  #只有starter 或 cdk两种类型，写其他的不会被判定导致bug
     cooldown: 0  # 冷却时间(秒)，0表示只能领取一次
     commands:
       - "cmd:money give {player} 100"
@@ -26,12 +26,12 @@ kits:
 
   # CDK礼包示例
   vip:
-    name: "VIP礼包"
-    type: "cdk"
+    name: "VIP礼包" #新增礼包的名字可以进行自定义
+    type: "cdk"    #只有starter 或 cdk两种类型，写其他的不会被判定导致bug
     commands:
       - "money give {player} 100"
 
 # CDK设置
 cdk-settings:
-  code-length: 12
+  code-length: 15
   code-charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

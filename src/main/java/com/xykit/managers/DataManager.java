@@ -65,19 +65,20 @@ public class DataManager {
     }
 
     /**
-     * 重新加载数据文件（用于手动修改后重新加载）
+     * 重载数据文件
      */
     public void reloadData() {
-        if (dataFile == null || !dataFile.exists()) {
-            loadData();
-            return;
+        if (dataFile == null) {
+            dataFile = new File(plugin.getDataFolder(), "data.yml");
         }
 
-        try {
+        if (dataFile.exists()) {
+            // 重新从文件加载配置
             dataConfig = YamlConfiguration.loadConfiguration(dataFile);
-            plugin.getLogger().info("数据文件重新加载完成");
-        } catch (Exception e) {
-            plugin.getLogger().severe("重新加载数据文件时出错: " + e.getMessage());
+            plugin.getLogger().info("数据文件重载完成，当前有 " + getAllCDKs().size() + " 个CDK");
+        } else {
+            // 如果文件不存在，重新加载
+            loadData();
         }
     }
 
@@ -89,6 +90,7 @@ public class DataManager {
 
         try {
             dataConfig.save(dataFile);
+            plugin.getLogger().info("数据保存成功");
         } catch (IOException e) {
             plugin.getLogger().severe("保存数据文件时出错: " + e.getMessage());
         }
@@ -124,13 +126,14 @@ public class DataManager {
         }
 
         try {
-            // 存储时统一使用小写，避免大小写不一致问题
-            dataConfig.set("cdks." + code + ".kit", kitName.toLowerCase());
+            // 存储小写的礼包名称，确保一致性
+            String lowerKitName = kitName.toLowerCase();
+            dataConfig.set("cdks." + code + ".kit", lowerKitName);
             dataConfig.set("cdks." + code + ".max-uses", uses);
             dataConfig.set("cdks." + code + ".used", 0);
             dataConfig.set("cdks." + code + ".created", System.currentTimeMillis());
             saveData();
-            plugin.getLogger().info("成功添加CDK: " + code + " -> " + kitName + " (使用次数: " + uses + ")");
+            plugin.getLogger().info("成功添加CDK: " + code + " -> " + lowerKitName + " (使用次数: " + uses + ")");
             return true;
         } catch (Exception e) {
             plugin.getLogger().severe("添加CDK时出错: " + e.getMessage());
@@ -163,6 +166,8 @@ public class DataManager {
 
         int used = getCDKUses(code) + 1;
         dataConfig.set("cdks." + code + ".used", used);
+
+        // 立即保存数据
         saveData();
 
         plugin.getLogger().info("CDK " + code + " 被使用，当前使用次数: " + used + "/" + getCDKMaxUses(code));
