@@ -206,6 +206,81 @@ public class DataManager {
         return dataConfig.getLong("cdks." + code + ".created", 0);
     }
 
+    /**
+     * 获取所有已使用完的CDK（used >= max-uses）
+     * @return 已使用完的CDK集合
+     */
+    public Set<String> getUsedUpCDKs() {
+        Set<String> usedUpCDKs = new HashSet<>();
+        if (dataConfig == null || !dataConfig.contains("cdks")) {
+            return usedUpCDKs;
+        }
+
+        Set<String> allCDKs = getAllCDKs();
+        for (String code : allCDKs) {
+            int used = getCDKUses(code);
+            int maxUses = getCDKMaxUses(code);
+            if (maxUses > 0 && used >= maxUses) {
+                usedUpCDKs.add(code);
+            }
+        }
+
+        return usedUpCDKs;
+    }
+
+    /**
+     * 清除所有已使用完的CDK
+     * @return 被清除的CDK数量
+     */
+    public int cleanUsedUpCDKs() {
+        Set<String> usedUpCDKs = getUsedUpCDKs();
+        int count = 0;
+
+        for (String code : usedUpCDKs) {
+            if (removeCDK(code)) {
+                count++;
+            }
+        }
+
+        plugin.getLogger().info("已清除 " + count + " 个已使用完的CDK");
+        return count;
+    }
+
+    /**
+     * 获取CDK统计信息
+     * @return 包含CDK统计信息的Map
+     */
+    public Map<String, Object> getCDKStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        if (dataConfig == null || !dataConfig.contains("cdks")) {
+            stats.put("total", 0);
+            stats.put("used_up", 0);
+            stats.put("available", 0);
+            return stats;
+        }
+
+        Set<String> allCDKs = getAllCDKs();
+        int total = allCDKs.size();
+        int usedUp = 0;
+        int available = 0;
+
+        for (String code : allCDKs) {
+            int used = getCDKUses(code);
+            int maxUses = getCDKMaxUses(code);
+            if (maxUses > 0 && used >= maxUses) {
+                usedUp++;
+            } else {
+                available++;
+            }
+        }
+
+        stats.put("total", total);
+        stats.put("used_up", usedUp);
+        stats.put("available", available);
+
+        return stats;
+    }
+
     public FileConfiguration getDataConfig() {
         return dataConfig;
     }

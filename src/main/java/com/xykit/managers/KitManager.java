@@ -320,4 +320,33 @@ public class KitManager {
     public int getGeneratedCDKCount() {
         return generatedCDKs.size();
     }
+
+    /**
+     * 清除所有已使用完的CDK
+     * @return 被清除的CDK数量
+     */
+    public int cleanUsedUpCDKs() {
+        int count = dataManager.cleanUsedUpCDKs();
+
+        // 更新内存中的CDK集合
+        loadExistingCDKs();
+
+        return count;
+    }
+
+    /**
+     * 获取CDK统计信息
+     * @return 包含CDK统计信息的Map
+     */
+    public Map<String, Object> getCDKStatistics() {
+        return dataManager.getCDKStatistics();
+    }
+
+    /**
+     * 获取所有已使用完的CDK列表
+     * @return 已使用完的CDK集合
+     */
+    public Set<String> getUsedUpCDKs() {
+        return dataManager.getUsedUpCDKs();
+    }
 }

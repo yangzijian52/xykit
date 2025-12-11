@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class KitCommand implements CommandExecutor {
     private final XyKitPlugin plugin;
@@ -155,11 +156,85 @@ public class KitCommand implements CommandExecutor {
                     sender.sendMessage("§c你没有权限执行此命令!");
                     return true;
                 }
-                sender.sendMessage("§e当前内存中的CDK数量: §6" + kitManager.getGeneratedCDKCount());
+                Map<String, Object> stats = kitManager.getCDKStatistics();
+                sender.sendMessage("§6=== CDK统计信息 ===");
+                sender.sendMessage("§e总CDK数量: §6" + stats.get("total"));
+                sender.sendMessage("§e已使用完的CDK: §6" + stats.get("used_up"));
+                sender.sendMessage("§e可用的CDK: §6" + stats.get("available"));
+
+                // 显示已使用完的CDK列表
+                Set<String> usedUpList = kitManager.getUsedUpCDKs();
+                if (!usedUpList.isEmpty()) {
+                    sender.sendMessage("§e已使用完的CDK列表:");
+                    int count = 0;
+                    for (String code : usedUpList) {
+                        if (count < 10) { // 只显示前10个
+                            sender.sendMessage("§7- §6" + code);
+                            count++;
+                        } else {
+                            sender.sendMessage("§7... 还有 " + (usedUpList.size() - 10) + " 个");
+                            break;
+                        }
+                    }
+                }
+                sender.sendMessage("§6使用 §c/kit cleancdk§6 清理已使用完的CDK");
+                break;
+
+            case "cleancdk":
+                if (!sender.hasPermission("xykit.admin")) {
+                    sender.sendMessage("§c你没有权限执行此命令!");
+                    return true;
+                }
+
+                // 检查是否需要确认
+                boolean confirm = args.length > 1 && "confirm".equalsIgnoreCase(args[1]);
+
+                // 获取已使用完的CDK集合
+                Set<String> expiredCDKs = kitManager.getUsedUpCDKs();
+
+                if (!confirm) {
+                    if (expiredCDKs.isEmpty()) {
+                        sender.sendMessage("§a当前没有已使用完的CDK需要清理!");
+                        return true;
+                    }
+
+                    sender.sendMessage("§c警告：此操作将永久删除所有已使用完的CDK！");
+                    sender.sendMessage("§c当前有 §6" + expiredCDKs.size() + " §c个已使用完的CDK");
+                    sender.sendMessage("§c如果您确定要执行，请使用 §6/kit cleancdk confirm");
+
+                    // 显示部分CDK代码
+                    if (expiredCDKs.size() <= 5) {
+                        sender.sendMessage("§c将被删除的CDK:");
+                        for (String code : expiredCDKs) {
+                            sender.sendMessage("§7- §6" + code);
+                        }
+                    } else {
+                        sender.sendMessage("§c部分CDK代码:");
+                        int count = 0;
+                        for (String code : expiredCDKs) {
+                            if (count < 3) {
+                                sender.sendMessage("§7- §6" + code);
+                                count++;
+                            } else {
+                                break;
+                            }
+                        }
+                        sender.sendMessage("§7... 还有 " + (expiredCDKs.size() - 3) + " 个");
+                    }
+                    return true;
+                }
+
+                // 执行清理操作
+                int cleanedCount = kitManager.cleanUsedUpCDKs();
+                if (cleanedCount > 0) {
+                    sender.sendMessage("§a成功清理 §6" + cleanedCount + " §a个已使用完的CDK!");
+                } else {
+                    sender.sendMessage("§a没有找到需要清理的已使用完CDK!");
+                }
                 break;
 
             default:
-                sender.sendMessage("§c未知命令! 可用子命令: claim, create, createcdk, reload, cdkinfo");
+                sender.sendMessage("§c未知命令! 可用子命令: claim, create, createcdk, reload, cdkinfo, cleancdk");
                 break;
         }
         return true;
