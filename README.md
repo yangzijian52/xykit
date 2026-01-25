@@ -72,42 +72,34 @@ XyKit 是一个功能完善的Minecraft礼包插件，支持新手礼包和CDK�
 **配置文件位置**: `plugins/XyKit/config.yml`
 
   ```yaml
-# XyKit 礼包插件配置
-
 # 数据库设置
 database:
-  # 存储类型: flatfile 或 mysql
-  type: "flatfile"
-  # 如果是mysql，配置以下信息
-  mysql:
-    host: "localhost"
-    port: 3306
-    database: "minecraft"
-    username: "root"
-    password: "password"
-    table-prefix: "xykit_"
+  type: "flatfile"  # 使用平面文件存储
 
 # 礼包配置
 kits:
   # 新手礼包示例
   starter:
-    name: "新手礼包"
-    type: "starter"  #只有starter 或 cdk两种类型，写其他的不会被判定导致bug
-    cooldown: 0  # 冷却时间(秒)，0表示只能领取一次
+    name: "&a新手礼包"
+    type: "starter"  # 类型: starter(新手) 或 cdk
     commands:
-      - "cmd:money give {player} 100"
-      - "msg {player} &a欢迎来到服务器！"
-
+      - "money give {player} 1000"
+      - "give {player} diamond 5"
+      - "msg &a欢迎来到服务器！"
+  
   # CDK礼包示例
   vip:
-    name: "VIP礼包" #新增礼包的名字可以进行自定义
-    type: "cdk"    #只有starter 或 cdk两种类型，写其他的不会被判定导致bug
+    name: "&6VIP礼包"
+    type: "cdk"
     commands:
-      - "money give {player} 100"
+      - "money give {player} 5000"
+      - "give {player} diamond_block 3"
+      - "op:gamemode creative {player}"
+      - "cmd:say {player} 兑换了VIP礼包！"
 
 # CDK设置
 cdk-settings:
-  code-length: 15
+  code-length: 12  # CDK代码长度增加到12位，提高唯一性
   code-charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   ```
 
@@ -223,7 +215,6 @@ A: **可能是字符集太小导致冲突，尝试增加code-length或减少批�
 - **增强CDK唯一性保证机制**
 - **添加空值检查**
 - **添加详细的日志记录**
-- **添加删除已使用cdk**
 
 
 
