@@ -1,15 +1,15 @@
 name: XyKit
-version: 1.0.0
+version: 1.3.1
 main: com.xykit.XyKitPlugin
 api-version: "1.21"
 description: 一个功能完善的礼包插件
-author: YourName
-website: your-website.com
+author: yangzijian52
+website: https://github.com/yangzijian52/XyKit
 
 commands:
   kit:
     description: 礼包主命令
-    usage: /<command> [reload|create|createcdk|claim]
+    usage: /<command> [reload|create|createcdk|claim|cdkinfo|cleancdk|backup|restore]
     permission: xykit.use
   cdk:
     description: CDK兑换命令

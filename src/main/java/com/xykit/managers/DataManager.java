@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.Date;
 
 public class DataManager {
     private final XyKitPlugin plugin;
@@ -52,15 +53,23 @@ public class DataManager {
         // 加载数据文件
         dataConfig = YamlConfiguration.loadConfiguration(dataFile);
 
-        // 确保数据结构存在
+        // 确保数据结构存在 - 只在缺失时添加，不覆盖现有数据
+        boolean needsSave = false;
         if (!dataConfig.contains("players")) {
             dataConfig.set("players", new HashMap<>());
+            needsSave = true;
         }
         if (!dataConfig.contains("cdks")) {
             dataConfig.set("cdks", new HashMap<>());
+            needsSave = true;
         }
 
-        saveData(); // 保存以确保结构被写入
+        // 只在添加了新结构时才保存，避免覆盖现有数据
+        if (needsSave) {
+            saveData();
+            plugin.getLogger().info("数据文件结构已初始化");
+        }
+        
         plugin.getLogger().info("数据文件加载完成，当前有 " + getAllCDKs().size() + " 个CDK");
     }
 
@@ -89,10 +98,36 @@ public class DataManager {
         }
 
         try {
+            // 在保存前创建备份
+            if (dataFile.exists() && dataFile.length() > 0) {
+                File backupFile = new File(plugin.getDataFolder(), "data.yml.backup");
+                try {
+                    Files.copy(dataFile.toPath(), backupFile.toPath(), 
+                              java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    plugin.getLogger().fine("数据备份已创建");
+                } catch (IOException e) {
+                    plugin.getLogger().warning("创建数据备份失败: " + e.getMessage());
+                }
+            }
+            
             dataConfig.save(dataFile);
             plugin.getLogger().info("数据保存成功");
         } catch (IOException e) {
             plugin.getLogger().severe("保存数据文件时出错: " + e.getMessage());
+            
+            // 尝试从备份恢复
+            File backupFile = new File(plugin.getDataFolder(), "data.yml.backup");
+            if (backupFile.exists()) {
+                plugin.getLogger().warning("尝试从备份恢复数据...");
+                try {
+                    Files.copy(backupFile.toPath(), dataFile.toPath(), 
+                              java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    dataConfig = YamlConfiguration.loadConfiguration(dataFile);
+                    plugin.getLogger().info("数据已从备份恢复");
+                } catch (IOException ex) {
+                    plugin.getLogger().severe("从备份恢复失败: " + ex.getMessage());
+                }
+            }
         }
     }
 
@@ -283,5 +318,63 @@ public class DataManager {
 
     public FileConfiguration getDataConfig() {
         return dataConfig;
+    }
+
+    /**
+     * 创建手动备份
+     * @return 是否成功
+     */
+    public boolean createManualBackup() {
+        if (dataFile == null || !dataFile.exists()) {
+            plugin.getLogger().warning("数据文件不存在，无法创建备份");
+            return false;
+        }
+
+        try {
+            String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+            File backupFile = new File(plugin.getDataFolder(), "data_backup_" + timestamp + ".yml");
+            Files.copy(dataFile.toPath(), backupFile.toPath());
+            plugin.getLogger().info("手动备份已创建: " + backupFile.getName());
+            return true;
+        } catch (IOException e) {
+            plugin.getLogger().severe("创建手动备份失败: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 从备份恢复数据
+     * @return 是否成功
+     */
+    public boolean restoreFromBackup() {
+        File backupFile = new File(plugin.getDataFolder(), "data.yml.backup");
+        
+        if (!backupFile.exists()) {
+            plugin.getLogger().warning("备份文件不存在");
+            return false;
+        }
+
+        try {
+            // 先备份当前文件
+            if (dataFile.exists()) {
+                String timestamp = new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+                File oldFile = new File(plugin.getDataFolder(), "data_before_restore_" + timestamp + ".yml");
+                Files.copy(dataFile.toPath(), oldFile.toPath());
+                plugin.getLogger().info("当前数据已备份为: " + oldFile.getName());
+            }
+
+            // 从备份恢复
+            Files.copy(backupFile.toPath(), dataFile.toPath(), 
+                      java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            
+            // 重新加载数据
+            dataConfig = YamlConfiguration.loadConfiguration(dataFile);
+            
+            plugin.getLogger().info("数据已从备份恢复");
+            return true;
+        } catch (IOException e) {
+            plugin.getLogger().severe("从备份恢复失败: " + e.getMessage());
+            return false;
+        }
     }
 }

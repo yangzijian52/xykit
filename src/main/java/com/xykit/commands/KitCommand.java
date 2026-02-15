@@ -233,8 +233,38 @@ public class KitCommand implements CommandExecutor {
                 }
                 break;
 
+            case "backup":
+                if (!sender.hasPermission("xykit.admin")) {
+                    sender.sendMessage("§c你没有权限执行此命令!");
+                    return true;
+                }
+                if (plugin.getDataManager().createManualBackup()) {
+                    sender.sendMessage("§a数据备份创建成功!");
+                } else {
+                    sender.sendMessage("§c数据备份创建失败，请查看控制台日志!");
+                }
+                break;
+
+            case "restore":
+                if (!sender.hasPermission("xykit.admin")) {
+                    sender.sendMessage("§c你没有权限执行此命令!");
+                    return true;
+                }
+                sender.sendMessage("§c警告：此操作将从备份恢复数据，当前数据将被覆盖！");
+                sender.sendMessage("§c如果确定要恢复，请使用 §6/kit restore confirm");
+                
+                if (args.length > 1 && "confirm".equalsIgnoreCase(args[1])) {
+                    if (plugin.getDataManager().restoreFromBackup()) {
+                        sender.sendMessage("§a数据已从备份恢复!");
+                        sender.sendMessage("§e请使用 /kit reload 重新加载数据");
+                    } else {
+                        sender.sendMessage("§c数据恢复失败，请查看控制台日志!");
+                    }
+                }
+                break;
+
             default:
-                sender.sendMessage("§c未知命令! 可用子命令: claim, create, createcdk, reload, cdkinfo, cleancdk");
+                sender.sendMessage("§c未知命令! 可用子命令: claim, create, createcdk, reload, cdkinfo, cleancdk, backup, restore");
                 break;
         }
         return true;
