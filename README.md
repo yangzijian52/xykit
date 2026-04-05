@@ -11,6 +11,8 @@
 - 已升级到 `paper-api 26.1.1.build.20-alpha`
 - 编译与运行环境调整为 `Java 25+`
 - 当前仍使用 `plugin.yml`，无需切换到 `paper-plugin.yml`
+- 截至 `2026-04-05`，PaperMC 官方 Maven 的 `latest` 与 `release` 都指向 `26.1.1.build.20-alpha`
+- 已在 `Paper 26.1.1-20-dev/26.1@d29063d` 服务端环境完成加载与功能实测
 - 建议在 Paper 26.1 测试服中优先验证 `/kit`、`/cdk`、`/kit backup`、`/kit restore confirm`
 
 ## 插件简介
@@ -219,6 +221,7 @@ A: **可能是字符集太小导致冲突，尝试增加code-length或减少批�
 ### 版本 1.3.2 (2026-04-05)
 - 升级到 `paper-api 26.1.1.build.20-alpha`
 - 编译目标升级到 Java 25
+- 在 `Paper 26.1.1-20-dev/26.1@d29063d` 上完成加载与命令测试
 - 更新插件说明文档和 26.1 升级文档
 
 
