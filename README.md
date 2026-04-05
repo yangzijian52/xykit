@@ -1,10 +1,17 @@
 # XyKit 礼包插件
 
-**版本**: 1.3.1
-**适用版本**: Paper 1.21.11 (Leaves服务端兼容)
-**Java版本**: JDK 21+  
+**版本**: 1.3.2
+**适用版本**: Paper 26.1.x
+**Java版本**: JDK 25+  
 **作者**: yangzijian52  
 **GitHub**: [库](https://github.com/yangzijian52/XyKit)
+
+## 26.1 升级说明
+
+- 已升级到 `paper-api 26.1.1.build.20-alpha`
+- 编译与运行环境调整为 `Java 25+`
+- 当前仍使用 `plugin.yml`，无需切换到 `paper-plugin.yml`
+- 建议在 Paper 26.1 测试服中优先验证 `/kit`、`/cdk`、`/kit backup`、`/kit restore confirm`
 
 ## 插件简介
 
@@ -170,7 +177,7 @@ cdk-settings:
 ## 常见问题
 
 Q: 插件无法正常加载？
-A: 确保服务器使用Paper 1.21.8+和Java 21+
+A: 确保服务器使用 Paper 26.1.x 和 Java 25+
 
 Q: 礼包命令不执行？
 A: 检查命令语法是否正确，确保插件有相应权限
@@ -208,6 +215,11 @@ A: **可能是字符集太小导致冲突，尝试增加code-length或减少批�
 请不要手动修改此文件，以免造成数据损坏
 
 ## 更新日志
+
+### 版本 1.3.2 (2026-04-05)
+- 升级到 `paper-api 26.1.1.build.20-alpha`
+- 编译目标升级到 Java 25
+- 更新插件说明文档和 26.1 升级文档
 
 
 ### 版本 1.3.1 (2026-2-15)
@@ -260,8 +272,6 @@ Email: [3369275827@qq.com]
 
 ## 📄 开源协议
 本项目采用 MIT License 开源
-
-
 
 
 
