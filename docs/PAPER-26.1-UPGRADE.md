@@ -1,36 +1,36 @@
-# XyKit Paper 26.1 Upgrade Notes
+# XyKit Paper 26.1 升级说明
 
-## Scope
+## 文档范围
 
-This document records the Paper 26.1 compatibility upgrade for `XyKit`.
+本文档用于记录 `XyKit` 适配 Paper 26.1 的升级内容。
 
-- Project version: `1.3.2`
-- Target Paper API: `26.1.1.build.20-alpha`
-- Required Java version: `25+`
-- Upgrade date: `2026-04-05`
+- 项目版本：`1.3.2`
+- 目标 Paper API：`26.1.1.build.20-alpha`
+- 所需 Java 版本：`25+`
+- 升级日期：`2026-04-05`
 
-## What changed
+## 本次变更
 
-- Updated Maven dependency from `1.21.11-R0.1-SNAPSHOT` to `26.1.1.build.20-alpha`
-- Updated compiler target from Java `21` to Java `25`
-- Updated plugin metadata and README to reflect Paper 26.1 support
-- Preserved existing local feature changes already present in the working tree
+- Maven 依赖从 `1.21.11-R0.1-SNAPSHOT` 升级到 `26.1.1.build.20-alpha`
+- 编译目标从 Java `21` 升级到 Java `25`
+- 更新插件元数据与 README，使其与 Paper 26.1 支持信息保持一致
+- 保留升级前工作区里已经存在的功能改动
 
-## Notes
+## 说明
 
-- Paper's current 26.1 API artifacts are published as alpha builds in the PaperMC Maven repository.
-- The plugin still uses the Bukkit-style `plugin.yml` entrypoint and does not require `paper-plugin.yml` for this upgrade.
-- No Paper 26.1 specific code changes were required after a source review; this upgrade is primarily dependency, runtime, and documentation alignment.
+- 当前 Paper 26.1 的 API 制品在 PaperMC Maven 仓库中以 alpha 版本发布
+- 本插件仍使用 Bukkit 风格的 `plugin.yml` 作为入口，本次升级不需要切换到 `paper-plugin.yml`
+- 经过源码检查后，本次升级没有发现必须同步修改的 26.1 专用代码，重点在于依赖、Java 版本和文档对齐
 
-## Verification
+## 验证情况
 
-- Source review completed for version-sensitive files
-- Local Java runtime confirmed as `25.0.2`
-- Maven was not preinstalled on this machine, so a local build should be run after Maven is available or downloaded temporarily
+- 已检查版本相关文件
+- 本机 Java 运行环境已确认是 `25.0.2`
+- 本机原本没有预装 Maven，因此使用临时下载的 Maven 完成了本地构建验证
 
-## Release checklist
+## 发布前检查
 
-1. Build the project with Java 25.
-2. Test `/kit`, `/cdk`, `/kit backup`, and `/kit restore confirm` on a Paper 26.1 server.
-3. Verify data migration with an existing `data.yml`.
-4. Push the release commit and create a GitHub release if needed.
+1. 使用 Java 25 构建项目。
+2. 在 Paper 26.1 服务端测试 `/kit`、`/cdk`、`/kit backup`、`/kit restore confirm`。
+3. 使用已有的 `data.yml` 验证数据迁移是否正常。
+4. 如有需要，推送发布提交并创建 GitHub Release。
