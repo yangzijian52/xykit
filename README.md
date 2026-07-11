@@ -1,19 +1,19 @@
 # XyKit 礼包插件
 
-**版本**: 1.3.2
-**适用版本**: Paper 26.1.x
+**版本**: 1.3.3
+**适用版本**: Paper 26.2.x
 **Java版本**: JDK 25+  
 **作者**: yangzijian52  
 **GitHub**: [库](https://github.com/yangzijian52/XyKit)
 
-## 26.1 升级说明
+## 26.2 升级说明
 
-- 已升级到 `paper-api 26.1.1.build.20-alpha`
+- 已升级到 `paper-api 26.2.build.56-alpha`
 - 编译与运行环境调整为 `Java 25+`
 - 当前仍使用 `plugin.yml`，无需切换到 `paper-plugin.yml`
-- 截至 `2026-04-05`，PaperMC 官方 Maven 的 `latest` 与 `release` 都指向 `26.1.1.build.20-alpha`
-- 已在 `Paper 26.1.1-20-dev/26.1@d29063d` 服务端环境完成加载与功能实测
-- 建议在 Paper 26.1 测试服中优先验证 `/kit`、`/cdk`、`/kit backup`、`/kit restore confirm`
+- 截至 `2026-07-11`，PaperMC 官方 Maven 的 `latest` 与 `release` 都指向 `26.2.build.56-alpha`
+- 本次版本升级只调整 Paper API、插件版本和发布文档；现有功能代码保持不变
+- 按发布安排，本版本未额外进行 Paper 26.2 服务端功能测试
 
 ## 插件简介
 
@@ -179,7 +179,7 @@ cdk-settings:
 ## 常见问题
 
 Q: 插件无法正常加载？
-A: 确保服务器使用 Paper 26.1.x 和 Java 25+
+A: 确保服务器使用 Paper 26.2.x 和 Java 25+
 
 Q: 礼包命令不执行？
 A: 检查命令语法是否正确，确保插件有相应权限
@@ -217,6 +217,11 @@ A: **可能是字符集太小导致冲突，尝试增加code-length或减少批�
 请不要手动修改此文件，以免造成数据损坏
 
 ## 更新日志
+
+### 版本 1.3.3 (2026-07-11)
+- 升级到 `paper-api 26.2.build.56-alpha`
+- 适用服务端版本更新为 Paper 26.2.x
+- 功能代码保持不变，并更新插件元数据与 26.2 升级文档
 
 ### 版本 1.3.2 (2026-04-05)
 - 升级到 `paper-api 26.1.1.build.20-alpha`

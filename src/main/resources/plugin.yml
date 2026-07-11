@@ -1,5 +1,5 @@
 name: XyKit
-version: 1.3.2
+version: 1.3.3
 main: com.xykit.XyKitPlugin
 api-version: "1.21"
 description: 一个功能完善的礼包插件
