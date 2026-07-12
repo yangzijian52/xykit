@@ -6,6 +6,14 @@
 **作者**: yangzijian52  
 **GitHub**: [库](https://github.com/yangzijian52/XyKit)
 
+## SpigotMC 发布资料
+
+- [SpigotMC 资源介绍页 BBCode](docs/SPIGOTMC-RESOURCE.md)
+- [SpigotMC 完整文档 BBCode](docs/SPIGOTMC-RESOURCE-BBCODE.txt)
+- [SpigotMC 手动发布指南](docs/SPIGOTMC_MANUAL_PUBLISHING.md)
+- [更新日志](CHANGELOG.md)
+- [MIT License](LICENSE)
+
 ## 26.2 升级说明
 
 - 已升级到 `paper-api 26.2.build.56-alpha`

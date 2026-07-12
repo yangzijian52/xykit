@@ -1,0 +1,162 @@
+[CENTER][SIZE=7][B]XyKit Documentation[/B][/SIZE][/CENTER]
+
+[COLOR=#ff4d4d][B]Language notice:[/B][/COLOR] The SpigotMC resource page, documentation and support channel are English-only. Chinese-language support is not provided on SpigotMC. The plugin's runtime messages and bundled configuration comments are currently Chinese.
+
+[SIZE=5][B]Requirements[/B][/SIZE]
+[LIST]
+[*]Paper 26.2.x
+[*]Java 25 or newer
+[*]XyKit 1.3.3
+[*]No external plugin dependencies
+[*]Spigot and other Paper forks are not tested or claimed as supported
+[/LIST]
+
+[SIZE=5][B]Installation[/B][/SIZE]
+[LIST=1]
+[*]Stop the server.
+[*]Download [ICODE]xykit-1.3.3.jar[/ICODE] from the GitHub Release.
+[*]Place the jar in the server's [ICODE]plugins[/ICODE] directory.
+[*]Start the Paper 26.2 server once to generate [ICODE]plugins/XyKit/config.yml[/ICODE] and [ICODE]data.yml[/ICODE].
+[*]Stop the server and configure the kits. Editing while the server is stopped is safest.
+[*]Start the server again, or use [ICODE]/kit reload[/ICODE] after a configuration-only change.
+[/LIST]
+
+[SIZE=5][B]Player Commands[/B][/SIZE]
+[LIST]
+[*][ICODE]/kit[/ICODE] - list the configured starter and CDK kits
+[*][ICODE]/kit claim <kit>[/ICODE] - claim a starter kit
+[*][ICODE]/cdk <code>[/ICODE] - redeem a CDK code for its assigned kit
+[/LIST]
+
+[SIZE=5][B]Admin Commands[/B][/SIZE]
+[LIST]
+[*][ICODE]/kit create <kit>[/ICODE] - display a reminder to add the kit manually in [ICODE]config.yml[/ICODE]; this command does not create configuration
+[*][ICODE]/kit createcdk <kit> <max-uses> [batch-count][/ICODE] - create one code or a batch of up to 100 codes
+[*][ICODE]/kit reload[/ICODE] - reload both configuration and YAML data
+[*][ICODE]/kit cdkinfo[/ICODE] - show total, available and exhausted CDK counts plus up to ten exhausted codes
+[*][ICODE]/kit cleancdk[/ICODE] - preview exhausted-code cleanup
+[*][ICODE]/kit cleancdk confirm[/ICODE] - permanently remove all exhausted codes
+[*][ICODE]/kit backup[/ICODE] - create a timestamped copy named [ICODE]data_backup_yyyy-MM-dd_HH-mm-ss.yml[/ICODE]
+[*][ICODE]/kit restore[/ICODE] - show the restore warning
+[*][ICODE]/kit restore confirm[/ICODE] - restore [ICODE]data.yml.backup[/ICODE], preserve the replaced data as a timestamped file and reload the stored YAML
+[/LIST]
+
+[SIZE=5][B]Aliases[/B][/SIZE]
+XyKit does not define command aliases. Use [ICODE]/kit[/ICODE] and [ICODE]/cdk[/ICODE] exactly.
+
+[SIZE=5][B]Permissions[/B][/SIZE]
+[LIST]
+[*][ICODE]xykit.use[/ICODE] - access to the [ICODE]/kit[/ICODE] root command and player claim flow - default: true
+[*][ICODE]xykit.cdk.use[/ICODE] - access to [ICODE]/cdk[/ICODE] redemption - default: true
+[*][ICODE]xykit.admin[/ICODE] - access to every administrative [ICODE]/kit[/ICODE] subcommand - default: OP
+[*][ICODE]xykit.cdk.admin[/ICODE] - declared administrative CDK permission - default: OP; current command handlers use [ICODE]xykit.admin[/ICODE]
+[*][ICODE]xykit.*[/ICODE] - parent permission containing all four permission nodes
+[/LIST]
+When assigning administrative access to a non-operator group, grant both [ICODE]xykit.use[/ICODE] and [ICODE]xykit.admin[/ICODE], because the root [ICODE]/kit[/ICODE] command and its admin subcommands have separate checks.
+
+[SIZE=5][B]Starter Kit Flow[/B][/SIZE]
+[LIST=1]
+[*]Create a kit under [ICODE]kits[/ICODE] with [ICODE]type: "starter"[/ICODE].
+[*]The player runs [ICODE]/kit claim <kit>[/ICODE].
+[*]XyKit checks [ICODE]data.yml[/ICODE] for that player UUID and normalized kit name.
+[*]If the kit was not previously claimed, its configured actions run.
+[*]The claim is saved immediately and future claims for the same starter kit are rejected.
+[/LIST]
+
+[SIZE=5][B]CDK Flow[/B][/SIZE]
+[LIST=1]
+[*]Create a kit under [ICODE]kits[/ICODE] with [ICODE]type: "cdk"[/ICODE].
+[*]An administrator generates one or more codes with [ICODE]/kit createcdk[/ICODE].
+[*]The code, assigned kit, maximum uses, current uses and creation time are saved in [ICODE]data.yml[/ICODE].
+[*]A player redeems it with [ICODE]/cdk <code>[/ICODE].
+[*]XyKit validates the code and assigned kit, increments and saves its use counter, then runs the reward actions.
+[*]Exhausted codes remain available for statistics until an administrator confirms cleanup.
+[/LIST]
+
+[SIZE=5][B]Configuration Files[/B][/SIZE]
+[LIST]
+[*][ICODE]plugins/XyKit/config.yml[/ICODE] - administrator-managed kit definitions and CDK generation settings
+[*][ICODE]plugins/XyKit/data.yml[/ICODE] - plugin-managed player claims and CDK records; do not edit while the server is running
+[/LIST]
+
+[SIZE=5][B]Common Configuration[/B][/SIZE]
+[CODE]kits:
+  starter:
+    name: "Starter Kit"
+    type: "starter"
+    cooldown: 0
+    commands:
+      - "cmd:give {player} bread 16"
+      - "msg &aYour starter kit has been delivered."
+
+  vip:
+    name: "VIP Kit"
+    type: "cdk"
+    commands:
+      - "cmd:give {player} diamond 3"
+      - "broadcast:&6{player} redeemed a VIP kit."
+
+cdk-settings:
+  code-length: 15
+  code-charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[/CODE]
+
+[SIZE=5][B]Reward Action Types[/B][/SIZE]
+[LIST]
+[*][ICODE]give {player} bread 16[/ICODE] - runs as the redeeming player
+[*][ICODE]cmd:give {player} bread 16[/ICODE] - runs from the server console
+[*][ICODE]op:gamemode survival[/ICODE] - temporarily grants the player operator status, runs the command and restores the previous status
+[*][ICODE]msg &aText[/ICODE] - sends a private message with ampersand color conversion
+[*][ICODE]broadcast:&6Text[/ICODE] - broadcasts a message with ampersand color conversion
+[/LIST]
+The [ICODE]{player}[/ICODE] placeholder is replaced with the current player name. Prefix matching is case-sensitive.
+
+[SIZE=5][B]CDK Generation Settings[/B][/SIZE]
+[LIST]
+[*][ICODE]cdk-settings.code-length[/ICODE] controls the generated code length. The bundled default is 15.
+[*][ICODE]cdk-settings.code-charset[/ICODE] contains every character available to the random generator.
+[*]Generation checks both an in-memory set and existing YAML records for duplicates.
+[*]Each code generation attempt is limited to 100 collision retries.
+[*]A single command can generate at most 100 codes.
+[*]Use a positive [ICODE]max-uses[/ICODE] value. Zero or negative values produce a code that cannot be redeemed.
+[/LIST]
+
+[SIZE=5][B]Data Storage and Backups[/B][/SIZE]
+[LIST]
+[*]Player claim records use UUIDs and normalized kit names.
+[*]CDK records contain [ICODE]kit[/ICODE], [ICODE]max-uses[/ICODE], [ICODE]used[/ICODE] and [ICODE]created[/ICODE].
+[*]Data changes are saved synchronously to [ICODE]data.yml[/ICODE].
+[*]Before a save, the previous non-empty data file replaces [ICODE]data.yml.backup[/ICODE].
+[*][ICODE]/kit backup[/ICODE] creates an additional timestamped snapshot.
+[*][ICODE]/kit restore confirm[/ICODE] restores only [ICODE]data.yml.backup[/ICODE], not an arbitrary timestamped manual backup.
+[/LIST]
+For disaster recovery, stop the server and copy the complete [ICODE]plugins/XyKit[/ICODE] directory to external storage.
+
+[SIZE=5][B]Upgrading[/B][/SIZE]
+[LIST=1]
+[*]Stop the server.
+[*]Back up [ICODE]plugins/XyKit/data.yml[/ICODE], [ICODE]config.yml[/ICODE] and any backup files.
+[*]Replace the old jar with [ICODE]xykit-1.3.3.jar[/ICODE]. Do not leave multiple XyKit jars in the plugins directory.
+[*]Start the server and inspect the console for XyKit load errors.
+[*]Run [ICODE]/kit[/ICODE] and [ICODE]/kit cdkinfo[/ICODE] to confirm the configured kits and stored CDKs are visible.
+[/LIST]
+The Paper 26.2 update does not intentionally change the YAML data layout. No manual data conversion is expected, but a backup is still required.
+
+[SIZE=5][B]Known Limits[/B][/SIZE]
+[LIST]
+[*]Runtime player messages, administrator feedback, console messages and bundled configuration comments are currently Chinese.
+[*]Only Paper 26.2.x with Java 25 or newer is claimed as supported.
+[*]The [ICODE]database.type[/ICODE] and [ICODE]database.mysql[/ICODE] fields do not select a database backend in the current code; storage remains YAML-only.
+[*]The [ICODE]cooldown[/ICODE] value is loaded but not enforced. Starter kits are one-time claims, not timed cooldown kits.
+[*][ICODE]/kit create[/ICODE] does not modify [ICODE]config.yml[/ICODE].
+[*]No command aliases or tab completer are provided.
+[*]The automatic restore command selects only [ICODE]data.yml.backup[/ICODE]. Timestamped manual backups require manual file recovery.
+[*]The 1.3.3 Paper 26.2 update was compiled successfully but was not additionally tested on a live Paper 26.2 server.
+[/LIST]
+
+[SIZE=5][B]Support[/B][/SIZE]
+[LIST]
+[*][URL=https://github.com/yangzijian52/xykit]Source Code and Chinese README[/URL]
+[*][URL=https://github.com/yangzijian52/xykit/releases]Downloads[/URL]
+[*][URL=https://github.com/yangzijian52/xykit/issues]English Bug Reports and Support[/URL]
+[/LIST]
+The SpigotMC resource page, documentation and support channel are English-only. Chinese-language support is not provided on SpigotMC.
