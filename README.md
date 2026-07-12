@@ -5,6 +5,7 @@
 **Java版本**: JDK 25+  
 **作者**: yangzijian52  
 **GitHub**: [库](https://github.com/yangzijian52/XyKit)
+**SpigotMC**: [XyKit Resource](https://www.spigotmc.org/resources/xykit.137019/)
 
 ## SpigotMC 发布资料
 
